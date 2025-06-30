@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星際彩帶純背景</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #f1f4fa 0%, #e5e2f1 100%);
+    }
+    .confetti-bg {
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      mask-image: radial-gradient(circle 32px at 50% 50%, transparent 0px, transparent 28px, black 48px, black 100%);
+      -webkit-mask-image: radial-gradient(circle 32px at 50% 50%, transparent 0px, transparent 28px, black 48px, black 100%);
+    }
+    .confetti-dot {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      will-change: transform, opacity;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+  </style>
+</head>
+<body>
+  <div class="confetti-bg" id="confetti-bg"></div>
+  <script>
+    // 彩帶參數
+    const pastelColors = [
+      '#FFD1DC','#A1C8E6','#FFE8A3','#B2F7C6','#F7D6E0','#A9E1F7','#FAEDCB','#D1CFE2',
+      '#E6A1C8','#D4F2E7','#E1C6A8','#C0B7E8','#F2C6B6','#FFE1F6','#BAE1FF','#F7B6C2',
+      '#F2E1C6','#E6E6FA','#FFF5B7','#BCF5BC','#BEE8FA','#FFD4B8','#E8D0C6','#E1C2B6',
+      '#C9E4FF','#FFD2E1','#B2B2B2','#D5F4FF','#E8C6FF','#D6E6FF','#FFFAE5','#F5F5FF',
+      '#C0C0E8','#B2A1D8','#FFB7C5','#B6D8F2'
+    ];
+    const starColors = [
+      '#FFF3E1','#FDF6F0','#F2FFE6','#E9F5DB','#E4D9FF','#FCE2DB','#E7E9FC','#D8E2DC'
+    ];
+    const confettiLayers = [
+      { size: 6, color: pastelColors, minMs: 30, maxMs: 70, blur: '0 1px 8px 1px #eae5ff60', opacity: 0.33 },
+      { size: 3.5, color: pastelColors, minMs: 22, maxMs: 55, blur: '0 1px 4px 1px #fff4ff40', opacity: 0.18 },
+      { size: 1.7, color: starColors, minMs: 13, maxMs: 34, blur: '0 1px 3px 1px #ffffff50', opacity: 0.12 },
+      { size: 1, color: starColors, minMs: 6, maxMs: 16, blur: '0 1px 2px 0 #fff8fc32', opacity: 0.08 }
+    ];
+    const center = () => [window.innerWidth / 2, window.innerHeight / 2];
+    function randomBetween(a, b) { return a + (b - a) * Math.random(); }
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function createConfetti(layer) {
+      const [cx, cy] = center();
+      const x0 = cx + randomBetween(-30, 30);
+      const y0 = cy + randomBetween(-30, 30);
+      const rad = randomBetween(0, 2 * Math.PI);
+      const maxR = Math.sqrt(window.innerWidth ** 2 + window.innerHeight ** 2) * randomBetween(0.7, 1.0);
+      const pathSway = randomBetween(-0.15, 0.15);
+      const duration = randomBetween(6, 10);
+      const x1 = cx + Math.cos(rad + pathSway) * maxR;
+      const y1 = cy + Math.sin(rad + pathSway) * maxR;
+      const el = document.createElement('div');
+      el.className = 'confetti-dot';
+      el.style.width = el.style.height = layer.size + 'px';
+      el.style.left = x0 + 'px';
+      el.style.top = y0 + 'px';
+      el.style.background = pick(layer.color);
+      el.style.boxShadow = layer.blur;
+      el.style.opacity = 0;
+      el.style.transition = 'none';
+      el.style.zIndex = 1;
+      const rot0 = randomBetween(0, 360);
+      const rot1 = rot0 + randomBetween(90, 800);
+      let start = null;
+      function animate(ts) {
+        if (!start) start = ts;
+        const t = (ts - start) / (duration * 1000);
+        let op = 0;
+        if (t > 0.02 && t < 0.1) op = t * 11;
+        else if (t >= 0.1 && t <= 0.66) op = layer.opacity;
+        else if (t > 0.66 && t < 1) op = layer.opacity * (1 - (t - 0.66) / 0.34);
+        el.style.opacity = op;
+        const curve = Math.sin(Math.PI * t) * 40 * pathSway;
+        const x = x0 + (x1 - x0) * t + Math.cos(rad + Math.PI/2) * curve;
+        const y = y0 + (y1 - y0) * t + Math.sin(rad + Math.PI/2) * curve;
+        el.style.transform = `translate(${x-x0}px,${y-y0}px) rotate(${rot0 + (rot1-rot0)*t}deg)`;
+        if (t < 1) { requestAnimationFrame(animate); } else { el.remove(); }
+      }
+      setTimeout(() => {
+        document.getElementById('confetti-bg').appendChild(el);
+        requestAnimationFrame(animate);
+      }, randomBetween(0, 45));
+    }
+    function spawnLayer(layer) {
+      function next() {
+        createConfetti(layer);
+        setTimeout(next, randomBetween(layer.minMs, layer.maxMs));
+      }
+      next();
+    }
+    window.addEventListener('DOMContentLoaded', () => {
+      confettiLayers.forEach(spawnLayer);
+    });
+    window.addEventListener('resize',()=>{});
+  </script>
+</body>
+</html>

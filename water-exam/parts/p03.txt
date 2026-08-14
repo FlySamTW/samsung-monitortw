@@ -1,0 +1,35 @@
+SCS較偏一般工程土壤描述與行為分類。</p>", "tip": "這題是觀念型，適合先拿分；用表格比較最清楚。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0511&t=Q"}, {"id": "114-大地工程學-3", "year": "114", "subject": "大地工程學", "no": 3, "text": "現地有厚10 m黏土層，下方為受壓含水層，交界面受壓水頭5 m。若在黏土層垂直開挖且安全係數FS=1.2，求可開挖深度H、交界深度土壤有效應力及開挖面單位面積滲流量。黏土單位重17.8 kN/m³，滲透係數依原題。（25分）", "difficulty": "偏難", "priority": false, "image": null, "answer": null, "tip": "這是開挖底部隆起／滲透穩定問題；先比較上覆土有效重量與受壓水揚壓。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0511&t=Q"}, {"id": "114-大地工程學-4", "year": "114", "subject": "大地工程學", "no": 4, "text": "厚層正常壓密黏土，單位重17.5 kN/m³，地下水位地表下2 m。CU三軸試驗初始圍壓σ₃=160 kN/m²，破壞時有效應力摩擦角φ′=30°，軸差壓力Δσ<sub>f</sub>=220 kN/m²。求破壞時孔隙水壓，以及依試驗結果估計現地10 m深度不排水剪力強度。（25分）", "difficulty": "偏難", "priority": false, "image": null, "answer": null, "tip": "先用有效應力Mohr-Coulomb求破壞時有效主應力，再由總應力減有效應力求孔壓。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0511&t=Q"}, {"id": "114-水利工程-1", "year": "114", "subject": "水利工程", "no": 1, "text": "列出水文收支方程式基本形式並解釋各項因子。某小型蓄水池年初貯蓄量120萬噸；各月入流量（萬噸）11、15、16、20、26、46、66、61、52、28、17、13；出流量17、20、20、25、27、37、50、42、30、27、23、18。求7月底及11月底貯蓄量。（25分）", "difficulty": "基礎", "priority": true, "image": null, "answer": "<p>基本水量平衡：</p>\n<p class=\"formula\">ΔS = Inflow − Outflow（若另有降雨、蒸發、滲漏則各自列入）</p>\n<p>由120萬噸開始逐月累加「入流−出流」：</p>\n<p>1～7月底依序：114、109、105、100、99、108、<b>124</b>萬噸。</p>\n<p>8～11月底：143、165、166、<b>160</b>萬噸。</p>\n<p>答案：<b>7月底124萬噸；11月底160萬噸。</b></p>", "tip": "水量平衡是必拿分題，務必寫出單位並逐月累計。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0512&t=Q"}, {"id": "114-水利工程-2", "year": "114", "subject": "水利工程", "no": 2, "text": "臺灣山區常有堰塞湖形成風險，後續破壞可能形成高含砂水流。請說明下游防洪構造物及河川治理之因應對策。（15分）", "difficulty": "中等", "priority": false, "image": null, "answer": null, "tip": "可從監測預警、降水位、疏浚、導流、消能、防砂、橋梁通洪能力及避難等面向作答。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0512&t=Q"}, {"id": "114-水利工程-3", "year": "114", "subject": "水利工程", "no": 3, "text": "海岸防護對策可分剛性工法與柔性工法。至少各列舉2種並說明功能；另依侵蝕潛勢、海洋遊憩、景觀調和等需求，分類說明綜合治理模式。（30分）", "difficulty": "中等", "priority": false, "image": null, "answer": null, "tip": "先把剛性（海堤、突堤、離岸堤等）與柔性（養灘、沙丘／植生等）分清，再談組合策略。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0512&t=Q"}, {"id": "114-水利工程-4", "year": "114", "subject": "水利工程", "no": 4, "text": "說明何謂等價糙度（Equivalent roughness）。假設河床及河岸之曼寧糙度與濕周分別為 n<sub>b</sub>、n<sub>s</sub>、P<sub>b</sub>、P<sub>s</sub>，依等流速假設推導等價糙度表示式。（30分）", "difficulty": "中等", "priority": true, "image": null, "answer": null, "tip": "推導時從各區 Manning 流速相等／總阻力等效的條件開始，注意不同合成糙度公式的假設。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0512&t=Q"}];
+const RESOURCES=[{"year": "107", "subject": "大地工程學", "source": "高點／高上", "label": "名師詳解PDF", "url": "https://dklf1axgzp6at.cloudfront.net/Paper/Civil/107/122665.pdf"}, {"year": "106", "subject": "大地工程學", "source": "高點／高上", "label": "名師詳解PDF", "url": "https://dklf1axgzp6at.cloudfront.net/Paper/Civil/106/121687.pdf"}, {"year": "105", "subject": "水文學", "source": "九華", "label": "官方題解貼文", "url": "https://www.facebook.com/johwa1975/posts/105%E5%B9%B4-%E6%B0%B4%E5%88%A9%E6%8A%80%E5%B8%AB-%E6%B0%B4%E6%96%87%E5%AD%B8-%E5%8D%B3%E6%99%82%E9%A1%8C%E8%A7%A3/1334584336586102/"}, {"year": "102", "subject": "水資源工程", "source": "九華", "label": "完整參考題解PDF", "url": "https://www.johwa.com.tw/news/images/102%E5%B9%B4%E6%B0%B4%E5%88%A9%E6%8A%80%E5%B8%AB-%E6%B0%B4%E8%B3%87%E6%BA%90%E5%B7%A5%E7%A8%8B.pdf"}, {"year": "101", "subject": "流體力學", "source": "九華", "label": "完整參考題解PDF", "url": "https://www.johwa.com.tw/image/ans/101%E6%B0%B4%E5%88%A9%E5%B0%88%E6%8A%80%E7%89%B9%E8%80%83-%E6%B5%81%E9%AB%94%E5%8A%9B%E5%AD%B8.pdf"}, {"year": "107", "subject": "流體力學", "source": "九華", "label": "參考題解貼文", "url": "https://www.facebook.com/100057474399378/posts/107%E6%B0%B4%E5%88%A9%E6%8A%80%E5%B8%AB-%E6%B5%81%E9%AB%94%E5%8A%9B%E5%AD%B8%E5%8F%83%E8%80%83%E9%A1%8C%E8%A7%A3/802957600048825/"}];
+const subjects=["流體力學","水資源工程與規劃","水文學","渠道水力學","大地工程學","水利工程"];
+let currentSubject="水文學", currentId=null, coreOnly=false, solvedOnly=false;
+let done=JSON.parse(localStorage.getItem("hydroDone")||"{}");
+let stars=JSON.parse(localStorage.getItem("hydroStars")||"{}");
+function esc(s){return s}
+function renderSubjects(){
+  const el=document.getElementById("subjects");
+  el.innerHTML=subjects.map(s=>{
+    const qs=QUESTIONS.filter(q=>q.subject===s), dc=qs.filter(q=>done[q.id]).length;
+    return `<button class="subject-btn ${s===currentSubject?'active':''}" onclick="setSubject('${s}')">${s} <span class="stat">${dc}/${qs.length}</span></button>`;
+  }).join("");
+  const all=QUESTIONS.length, dc=QUESTIONS.filter(q=>done[q.id]).length;
+  document.getElementById("progress").innerHTML=`目前進度：<b>${dc} / ${all}</b> 題<br>建議：先完成綠色「建議先做」題。`;
+}
+function filtered(){
+  const k=document.getElementById("search").value.trim().toLowerCase();
+  return QUESTIONS.filter(q=>q.subject===currentSubject)
+    .filter(q=>!coreOnly||q.priority)
+    .filter(q=>!solvedOnly||!!q.answer)
+    .filter(q=>!k||q.text.toLowerCase().includes(k)||q.subject.toLowerCase().includes(k));
+}
+function renderQuestionList(){
+  const qs=filtered(); const el=document.getElementById("questionList");
+  el.innerHTML=qs.map(q=>`<button class="qchip ${q.id===currentId?'active':''} ${done[q.id]?'done':''}" onclick="showQ('${q.id}')">114年・第${q.no}題｜${q.difficulty}${q.priority?'・先做':''}</button>`).join("");
+  if(!qs.find(q=>q.id===currentId)) currentId=qs[0]?.id||null;
+  renderCard();
+}
+function setSubject(s){currentSubject=s;currentId=null;renderSubjects();renderQuestionList();window.scrollTo({top:0,behavior:'smooth'})}
+function diffClass(d){return d==='基礎'?'easy':d==='偏難'?'hard':'mid'}
+function renderCard(){
+  const q=QUESTIONS.find(x=>x.id===currentId); const el=document.getElementById("card");
+  if(!q){el.innerHTML="<p>目前沒有符合條件的題目。</p>";return}
+  const fig=q

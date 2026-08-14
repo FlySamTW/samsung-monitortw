@@ -1,0 +1,30 @@
+ton class="control" onclick="fontDelta(-2)">A−</button>
+    <button class="control" onclick="fontReset()">標準字</button>
+    <button class="control" onclick="fontDelta(2)">A＋</button>
+  </div>
+</div>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="side-title">六科題庫</div>
+    <div id="subjects"></div>
+    <div class="sep"></div>
+    <div class="progress" id="progress"></div>
+  </aside>
+  <main class="main">
+    <div class="toolbar">
+      <input id="search" class="search" placeholder="搜尋題目，例如：曼寧、單位歷線、Froude…" oninput="renderQuestionList()">
+      <button id="coreFilter" class="filter" onclick="toggleCore()">只看建議先做</button>
+      <button id="solvedFilter" class="filter" onclick="toggleSolved()">只看已有解答</button>
+    </div>
+    <div id="questionList" class="question-list"></div>
+    <article id="card" class="card"></article>
+    <section class="resources">
+      <h2>補習班公開題解資源</h2>
+      <div id="resources" class="res-grid"></div>
+      <div class="note">本站「114年題目」以考選部公開考畢試題為準；本站整理答案為學習用解題整理，不是考選部標準答案。補習班公開題解保留原連結供交叉核對。</div>
+    </section>
+  </main>
+</div>
+<div id="zoom" class="zoom" onclick="this.classList.remove('open')"><img id="zoomImg"></div>
+<script>
+const QUESTIONS=[{"id": "114-流體力學-1", "year": "114", "subject": "流體力學", "no": 1, "text": "有一三角形門，該三角形門鉸接在底邊，尺寸如下圖所示。若不計三角形門本身重量，請計算三角形門壓力中心的作用力 F，並計算三角形上角的反作用力 R<sub>T</sub>。水的比重量為 γ。（20分）", "difficulty": "中等", "priority": true, "image": null, "answer": null, "tip": "先由靜水壓力合力與壓力中心位置下手，再對鉸鏈取力矩。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0507&t=Q"}, {"id": "114-流體力學-2", "year": "114", "subject": "流體力學", "no": 2, "text": "預計建造一艘35 m長的船，其設計巡航速度為35 m/s。若用1 m長的模型船於水道進行拖曳力（drag force）模擬試驗，請利用因次分析計算：①模型船拖曳速度；②實船與模型船拖曳力比值；③實船與模型船功率比值。（20分）", "difficulty": "基礎", "priority": true, "image": null, "answer": "<p><b>核心：</b>自由液面船模採 Froude 相似。</p>\n<p>長度比 λ<sub>L</sub>=L<sub>p</sub>/L<sub>m</sub>=35。</p>\n<p>Froude 相似：V/√(gL) 相同，因此</p>\n<p class=\"formula\">V<sub>m</sub>=V<sub>p</sub>/√35=35/√35≈<b>5.92 m/s</b></p>\n<p>同一流體下，力尺度 F∝ρV²L²，而 V²∝L，所以</p>\n<p class=\"formula\">F<sub>p</sub>/F<sub>m</sub>=35³=<b>42,875</b></p>\n<p>功率 P=FV，因此</p>\n<p class=\"formula\">P<sub>p</sub>/P<sub>m</sub>=35³·√35≈<b>253,652</b></p>", "tip": "看到船模、自由液面、重力主導時，優先想到 Froude 相似。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0507&t=Q"}, {"id": "114-流體力學-3", "year": "114", "subject": "流體力學", "no": 3, "text": "如下圖所示，水在圓形水管內流動，水管內安裝一座流量噴嘴，噴嘴下方及噴嘴前端水管連接一座壓力計。壓力計流體為水銀，兩端水銀高差為 h，水管直徑為 D，噴嘴直徑為 d，噴嘴流量係數為 C<sub>d</sub>，水及水銀的比重量分別為 γ 及 γ<sub>Hg</sub>。試計算水管流量。（20分）", "difficulty": "中等", "priority": true, "image": null, "answer": "<p>由差壓計：</p>\n<p class=\"formula\">Δp=(γ<sub>Hg</sub>−γ)h</p>\n<p>連續方程：V₁=Q/A₁、V₂=Q/A₂；Bernoulli 式得到理想流量，再乘流量係數 C<sub>d</sub>：</p>\n<p class=\"formula\"><b>Q = C<sub>d</sub>A₂ √[ 2g h(γ<sub>Hg</sub>/γ−1) / (1−(d/D)⁴) ]</b></p>\n<p>其中 A₂=πd²/4。</p>", "tip": "這題重點是「差壓計＋Bernoulli＋連續方程」三個步驟串起來。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0507&t=Q"}, {"id": "114-流體力學-4", "year": "114", "subject": "流體力學", "no": 4, "text": "如下圖所示，彎管內水流流量為5 m³/s，彎管體積為10 m³，入口端壓力為650 kPa。若彎管能量損失為10 m，能量修正係數 α=1.0，水的比重量為9810 N/m³。固定彎管所需的力為何？（20分）", "difficulty": "偏難", "priority": false, "image": null, "answer": null, "tip": "先以能量方程求出口壓力／速度關係，再對控制體套三方向動量方程；別漏掉彎管內水重。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0507&t=Q"}, {"id": "114-流體力學-5", "year": "114", "subject": "流體力學", "no": 5, "text": "水經漏斗底部管子流出，管子流速及直徑分別為 3e<sup>−0.05t</sup> m/s 及10 mm。當 t=0 時，水位 y=200 mm。試問當水面降至 y=100 mm 時之流速為何？（20分）", "difficulty": "中等", "priority": true, "image": null, "answer": "<p>漏斗為圓錐形，高200 mm時直徑200 mm，因此 r=y/2。</p>\n<p>截面積 A(y)=πy²/4；出口面積 a=π(0.01)²/4。</p>\n<p>連續方程：</p>\n<p class=\"formula\">A(y)dy/dt = −a·3e<sup>−0.05t</sup></p>\n<p>由 y=0.2 m 積分至0.1 m，可得 e<sup>−0.05t</sup>=0.6111。</p>\n<p>因此</p>\n<p class=\"formula\">v=3×0.6111≈<b>1.83 m/s</b></p>", "tip": "這是非定常排水題；把漏斗水量變化率和出口流量相等。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0507&t=Q"}, {"id": "114-水資源工程與規劃-1", "year": "114", "subject": "水資源工程與規劃", "no": 1, "text": "合理的水價機制可提升用水效率、確保社會公平與正義，並促進水資源永續利用。依自來水法相關規定，請分析水資源成本定價的基本原則及考慮面向，並指出臺灣水價機制所面臨之問題與提出改善建議。（25分）", "difficulty": "中等", "priority": false, "image": null, "answer": null, "tip": "申論建議用「成本回收、效率、公平、永續、弱勢保障」五個標題組織答案。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0508&t=Q"}, {"id": "114-水資源工程與規劃-2", "year": "114", "subject": "水資源工程與規劃", "no": 2, "text": "某水庫溢洪道底檻標高103 m，水位—面積—容量關係如下：88/50/50、90/60/225、92/90/450、94/120/750、96/150/1200、98/185/1650、100/205/2250、102/215/3000、105/230/3900（單位依題目）。5月1日觀測水位91 m，各旬入流量依序為3、4、5、2、3、6、4、4、5、8、4、3 m³/s，每旬10日；每旬損失水量以蓄水量5%概估。利用線性內插，估計何月何旬發生溢流。（25分）", "difficulty": "偏難", "priority": false, "image": null, "answer": null, "tip": "這是逐旬水量平衡＋容量曲線線性內插，適合做成表格逐步推算。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0508&t=Q"}, {"id": "114-水資源工程與規劃-3", "year": "114", "subject": "水資源工程與規劃", "no": 3, "text": "某企業有A、B兩工廠，以水資源生產商品。受總用水量、各廠最大用水量及利潤函數限制，請寫出最大利潤之最佳化模式，並以線性規劃法求解最大利潤時A、B兩廠的水資源使用量。（25分；完整函數請參照原題PDF）", "difficulty": "偏難", "priority": false, "image": null, "answer": null, "tip": "先把決策變數、目標函數、總用水限制、A/B上限寫完整，再畫可行域。", "pdf": "https://wwwq.moex.gov.tw/exam/wHandExamQandA_File.ashx?c=002&code=114180&q=1&s=0508&t=Q"}, {"id": "114-水資源工程與規劃-4", "year": "114", "subject": "水資源工程與規劃", "no": 4, "text": "為農業灌溉，自1.2公里遠之蓄水池引水至田區；蓄水池出口高於田區引水入口3 m。採未襯砌梯形土渠，底寬2.8 m，邊坡係數1.0，曼寧粗糙係數 n=0.020。土渠不沖流速為1.5 m/s。正常水深0.8 m時是否會發生沖刷？（25分）", "difficulty": "基礎", "priority": true, "image": null, "answer": "<p>渠道坡度 S=3/1200=<b>0.0025</b>。</p>\n<p>梯形斷面：A=y(b+zy)=0.8(2.8+0.8)=<b>2.88 m²</b>。</p>\n<p>濕周 P=b+2y√(1+z²)=2.8+1.6√2≈5.063 m。</p>\n<p>水力半徑 R=A/P≈0.5689 m。</p>\n<p>Manning：</p>\n<p class=\"formula\">V=(1/n)R<sup>2/3</sup>S<sup>1/2</sup>≈<b>1.72 m/s</b></p>\n<p>1.72＞不沖流速1.5 m/s，因此<b>會有沖刷風險</b>

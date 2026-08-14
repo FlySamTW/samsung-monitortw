@@ -1,0 +1,52 @@
+.image?`<div class="figure"><img src="${q.image}" alt="原題圖形" onclick="zoom(this.src)"><div class="caption">原題圖形｜點一下可放大</div></div>`:`<div class="figure"><div style="font-size:18px;padding:20px;text-align:center">本題若有工程圖形，請點左側「開啟原始PDF」查看官方原圖。</div></div>`;
+  const ans=q.answer?q.answer:`<p class="pending">這題目前先保留作練習題，完整解答尚未整理進第一版。可先看下方原始試題或補習班題解資源。</p>`;
+  el.innerHTML=`
+  <div class="meta">
+    <span class="badge">114年</span><span class="badge">${q.subject}</span>
+    <span class="badge ${diffClass(q.difficulty)}">${q.difficulty}</span>
+    ${q.priority?'<span class="badge core">建議先做</span>':''}
+    ${q.answer?'<span class="badge core">已有解答</span>':''}
+  </div>
+  <h1>第${q.no}題</h1>
+  <div class="split">
+    <div>
+      <div class="qbody">${q.text}</div>
+      ${q.tip?`<div class="hint"><b>解題提示：</b>${q.tip}</div>`:''}
+      <div class="answer-wrap">
+        <button class="answer-toggle" onclick="toggleAnswer()">顯示／隱藏解答</button>
+        <div id="answer" class="answer">${ans}</div>
+      </div>
+      <div class="bottom-actions">
+        <button class="bigbtn primary" onclick="markDone()">${done[q.id]?'✓ 已完成':'標記：我做完了'}</button>
+        <button class="bigbtn star ${stars[q.id]?'on':''}" onclick="toggleStar()">${stars[q.id]?'★ 已收藏':'☆ 下次再看'}</button>
+        <button class="bigbtn" onclick="prevQ()">← 上一題</button>
+        <button class="bigbtn" onclick="nextQ()">下一題 →</button>
+      </div>
+      <div class="source">來源：考選部114年水利工程技師考畢試題｜<a href="${q.pdf}" target="_blank">開啟原始PDF</a></div>
+    </div>${fig}
+  </div>`;
+  renderQuestionListOnly();
+}
+function renderQuestionListOnly(){
+  const qs=filtered(); const el=document.getElementById("questionList");
+  el.innerHTML=qs.map(q=>`<button class="qchip ${q.id===currentId?'active':''} ${done[q.id]?'done':''}" onclick="showQ('${q.id}')">114年・第${q.no}題｜${q.difficulty}${q.priority?'・先做':''}</button>`).join("");
+}
+function showQ(id){currentId=id;renderCard();document.getElementById("card").scrollIntoView({behavior:"smooth",block:"start"})}
+function toggleAnswer(){document.getElementById("answer").classList.toggle("open")}
+function markDone(){done[currentId]=!done[currentId];localStorage.setItem("hydroDone",JSON.stringify(done));renderSubjects();renderCard()}
+function toggleStar(){stars[currentId]=!stars[currentId];localStorage.setItem("hydroStars",JSON.stringify(stars));renderCard()}
+function prevQ(){const qs=filtered();let i=qs.findIndex(q=>q.id===currentId); if(i>0) showQ(qs[i-1].id)}
+function nextQ(){const qs=filtered();let i=qs.findIndex(q=>q.id===currentId); if(i<qs.length-1) showQ(qs[i+1].id)}
+function toggleCore(){coreOnly=!coreOnly;document.getElementById("coreFilter").classList.toggle("active",coreOnly);currentId=null;renderQuestionList()}
+function toggleSolved(){solvedOnly=!solvedOnly;document.getElementById("solvedFilter").classList.toggle("active",solvedOnly);currentId=null;renderQuestionList()}
+function fontDelta(n){let v=parseInt(getComputedStyle(document.documentElement).getPropertyValue("--font"))||23;v=Math.min(34,Math.max(18,v+n));document.documentElement.style.setProperty("--font",v+"px");localStorage.setItem("hydroFont",v)}
+function fontReset(){document.documentElement.style.setProperty("--font","23px");localStorage.setItem("hydroFont",23)}
+function zoom(src){document.getElementById("zoomImg").src=src;document.getElementById("zoom").classList.add("open")}
+function renderResources(){
+ document.getElementById("resources").innerHTML=RESOURCES.map(r=>`<div class="res"><b>${r.year}年｜${r.subject}</b><br>${r.source}｜<a href="${r.url}" target="_blank">${r.label}</a></div>`).join("");
+}
+const fv=localStorage.getItem("hydroFont"); if(fv) document.documentElement.style.setProperty("--font",fv+"px");
+currentId=QUESTIONS.find(q=>q.subject===currentSubject&&q.priority)?.id;
+renderSubjects();renderQuestionList();renderResources();
+</script>
+</body></html>

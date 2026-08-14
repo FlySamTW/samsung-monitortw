@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="color-scheme" content="dark" />
+<title>互動式 3D 空間展示</title>
+<style>
+:root{--bg:#070b12;--glass:rgba(13,18,29,.66);--line:rgba(255,255,255,.13);--text:#f4f7fb;--muted:#aeb8c8;--accent:#6ee7ff;--accent2:#8b5cf6;--shadow:0 24px 80px rgba(0,0,0,.45)}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--bg);font-family:Inter,"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;color:var(--text)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 18% 10%,rgba(110,231,255,.11),transparent 30%),radial-gradient(circle at 82% 16%,rgba(139,92,246,.14),transparent 34%),linear-gradient(180deg,rgba(5,8,14,.06),rgba(5,8,14,.28));z-index:2}
+.viewer{position:fixed;inset:0;background:#05070b;z-index:0}.viewer iframe{width:100%;height:100%;border:0;display:block;background:#05070b}
+.loading{position:fixed;inset:0;display:grid;place-items:center;background:#070b12;z-index:8;transition:.5s opacity,.5s visibility}.loading.hidden{opacity:0;visibility:hidden}.spinner{width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.14);border-top-color:var(--accent);animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.topbar{position:fixed;top:max(16px,env(safe-area-inset-top));left:18px;right:18px;z-index:6;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:.45s}.brand{display:flex;align-items:center;gap:11px;padding:10px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(7,11,18,.58);backdrop-filter:blur(18px);box-shadow:0 10px 35px rgba(0,0,0,.22)}.brandmark{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 24px rgba(110,231,255,.25)}.brand strong{font-size:14px;letter-spacing:.04em}.brand span{font-size:11px;color:var(--muted);display:block;margin-top:1px}.actions{display:flex;gap:8px}.btn{appearance:none;border:1px solid var(--line);background:rgba(7,11,18,.58);color:var(--text);backdrop-filter:blur(18px);height:44px;padding:0 14px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:650;font-size:13px;cursor:pointer;transition:.2s;text-decoration:none}.btn:hover{border-color:rgba(110,231,255,.5);transform:translateY(-1px);background:rgba(12,18,29,.74)}.btn svg{width:17px;height:17px;stroke:currentColor}.btn.primary{border-color:transparent;background:linear-gradient(135deg,#9cf1ff,#7558ff);color:#07111b;box-shadow:0 9px 28px rgba(102,112,255,.28)}
+.intro{position:fixed;inset:0;z-index:5;display:grid;place-items:center;padding:96px 24px 28px;background:linear-gradient(90deg,rgba(5,8,14,.88) 0%,rgba(5,8,14,.62) 42%,rgba(5,8,14,.14) 100%);transition:.65s opacity,.65s visibility}.intro:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(90deg,#000,transparent 76%);pointer-events:none}.entered .intro{opacity:0;visibility:hidden}.panel{width:min(680px,100%);justify-self:start;margin-left:clamp(0px,5vw,90px);position:relative;z-index:2}.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#c6f8ff;margin-bottom:18px}.dot{width:7px;height:7px;background:#6ee7ff;border-radius:50%;box-shadow:0 0 18px #6ee7ff}.panel h1{font-size:clamp(36px,5vw,72px);line-height:.98;letter-spacing:-.045em;margin:0 0 22px;max-width:620px}.panel h1 em{font-style:normal;background:linear-gradient(105deg,#fff 15%,#88e9ff 55%,#a68cff 92%);-webkit-background-clip:text;background-clip:text;color:transparent}.lead{font-size:clamp(15px,1.5vw,19px);line-height:1.75;color:#c3ccda;max-width:570px;margin:0 0 28px}.features{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:30px}.chip{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(12,18,29,.52);font-size:12px;color:#d9e0ea;backdrop-filter:blur(12px)}.ctaRow{display:flex;flex-wrap:wrap;gap:11px}.start{height:52px;padding:0 20px;font-size:14px;border-radius:16px}.hint{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(16px);z-index:4;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:rgba(7,11,18,.64);backdrop-filter:blur(16px);font-size:11px;color:#c9d2df;opacity:0;pointer-events:none;transition:.5s}.entered .hint{opacity:1;transform:translateX(-50%) translateY(0)}
+.corner{position:fixed;right:22px;bottom:max(20px,env(safe-area-inset-bottom));z-index:4;width:270px;padding:14px 15px;border:1px solid var(--line);border-radius:16px;background:rgba(7,11,18,.62);backdrop-filter:blur(18px);font-size:11px;line-height:1.55;color:#bac4d2;opacity:0;transform:translateY(12px);transition:.5s}.entered .corner{opacity:1;transform:none}.corner strong{display:block;color:white;font-size:12px;margin-bottom:3px}
+@media(max-width:760px){.topbar{left:10px;right:10px;top:max(10px,env(safe-area-inset-top))}.brand{padding:8px 10px}.brand span{display:none}.actions .label{display:none}.btn{width:42px;padding:0}.panel{margin-left:0}.intro{padding:88px 18px 26px;background:linear-gradient(180deg,rgba(5,8,14,.9),rgba(5,8,14,.58) 72%,rgba(5,8,14,.34))}.panel h1{font-size:44px}.lead{font-size:15px}.features{gap:7px}.chip{font-size:11px}.start{width:auto;padding:0 18px}.corner{display:none}.hint{white-space:nowrap;font-size:10px}}
+@media(max-width:430px){.panel h1{font-size:38px}.eyebrow{margin-bottom:14px}.lead{margin-bottom:22px}.features{margin-bottom:24px}.actions{gap:6px}.brand strong{font-size:12px}.brandmark{width:25px;height:25px}.btn{height:40px;width:40px;border-radius:12px}}
+</style>
+</head>
+<body>
+<div class="viewer"><iframe id="viewer" title="Coohom 3D Viewer" src="https://www.coohom.com/pub/modelo/viewer/preview/3FO3DTY8SMXE?hl=zh_TW" allow="fullscreen; autoplay; xr-spatial-tracking; clipboard-read; clipboard-write" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+<div class="loading" id="loading"><div class="spinner" aria-label="載入中"></div></div>
+<header class="topbar">
+  <div class="brand"><div class="brandmark"></div><div><strong>INTERACTIVE SPACE</strong><span>Web 3D Experience</span></div></div>
+  <div class="actions">
+    <button class="btn" id="homeBtn" title="回到介紹頁"><svg fill="none" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9 20v-6h6v6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="label">介紹</span></button>
+    <button class="btn" id="reloadBtn" title="重新載入"><svg fill="none" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M18.5 9A7 7 0 0 0 6.2 7M5.5 15A7 7 0 0 0 17.8 17" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="label">重載</span></button>
+    <button class="btn" id="fsBtn" title="全螢幕"><svg fill="none" viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="label">全螢幕</span></button>
+    <a class="btn primary" target="_blank" rel="noopener" href="https://www.coohom.com/pub/modelo/viewer/preview/3FO3DTY8SMXE?hl=zh_TW" title="直接開啟原始 3D"><svg fill="none" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="label">直接開啟 3D</span></a>
+  </div>
+</header>
+<section class="intro">
+  <div class="panel">
+    <div class="eyebrow"><span class="dot"></span> LIVE 3D EXPERIENCE</div>
+    <h1>不是看圖片，<br><em>直接走進空間。</em></h1>
+    <p class="lead">將 3D 場景變成可直接分享的線上展示。桌機、平板與手機開啟網址即可瀏覽，不需要另外安裝軟體。</p>
+    <div class="features"><span class="chip">360° 自由查看</span><span class="chip">即時縮放與旋轉</span><span class="chip">跨裝置瀏覽</span><span class="chip">一個網址直接分享</span></div>
+    <div class="ctaRow">
+      <button class="btn primary start" id="startBtn">進入 3D 導覽 <svg fill="none" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <a class="btn start" target="_blank" rel="noopener" href="https://www.coohom.com/pub/modelo/viewer/preview/3FO3DTY8SMXE?hl=zh_TW">另開原始 Viewer</a>
+    </div>
+  </div>
+</section>
+<div class="hint">拖曳旋轉 · 滾輪／雙指縮放 · 右上角可全螢幕</div>
+<div class="corner"><strong>看不到嵌入式 3D？</strong>部分瀏覽器或 Coohom 權限設定可能限制 iframe，請使用右上角「直接開啟 3D」。</div>
+<script>
+const viewer=document.getElementById('viewer');
+const loading=document.getElementById('loading');
+const startBtn=document.getElementById('startBtn');
+const homeBtn=document.getElementById('homeBtn');
+const reloadBtn=document.getElementById('reloadBtn');
+const fsBtn=document.getElementById('fsBtn');
+const VIEWER_URL='https://www.coohom.com/pub/modelo/viewer/preview/3FO3DTY8SMXE?hl=zh_TW';
+viewer.addEventListener('load',()=>setTimeout(()=>loading.classList.add('hidden'),500));
+setTimeout(()=>loading.classList.add('hidden'),8500);
+startBtn.addEventListener('click',()=>document.body.classList.add('entered'));
+homeBtn.addEventListener('click',()=>document.body.classList.remove('entered'));
+reloadBtn.addEventListener('click',()=>{loading.classList.remove('hidden');viewer.src='about:blank';setTimeout(()=>viewer.src=VIEWER_URL,80)});
+fsBtn.addEventListener('click',async()=>{try{if(!document.fullscreenElement){await document.documentElement.requestFullscreen()}else{await document.exitFullscreen()}}catch(e){window.open(VIEWER_URL,'_blank','noopener')}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!document.fullscreenElement)document.body.classList.remove('entered')});
+</script>
+</body>
+</html>

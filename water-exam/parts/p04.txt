@@ -45,7 +45,15 @@ function zoom(src){document.getElementById("zoomImg").src=src;document.getElemen
 function renderResources(){
  document.getElementById("resources").innerHTML=RESOURCES.map(r=>`<div class="res"><b>${r.year}年｜${r.subject}</b><br>${r.source}｜<a href="${r.url}" target="_blank">${r.label}</a></div>`).join("");
 }
-const fv=localStorage.getItem("hydroFont"); if(fv) document.documentElement.style.setProperty("--font",fv+"px");
+const fontAuto4Key="hydroFontAuto4_v1";
+if(localStorage.getItem(fontAuto4Key)!=="1"){
+  document.documentElement.style.setProperty("--font","31px");
+  localStorage.setItem("hydroFont",31);
+  localStorage.setItem(fontAuto4Key,"1");
+}else{
+  const fv=localStorage.getItem("hydroFont");
+  if(fv) document.documentElement.style.setProperty("--font",fv+"px");
+}
 currentId=QUESTIONS.find(q=>q.subject===currentSubject&&q.priority)?.id;
 renderSubjects();renderQuestionList();renderResources();
 </script>

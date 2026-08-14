@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>TP-Link WF 互動式 3D 攤位</title>
+<style>
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#071018;font-family:Arial,'Microsoft JhengHei',sans-serif;color:white}
+#renderCanvas{width:100%;height:100%;touch-action:none;display:block;outline:none}
+#loading{position:fixed;inset:0;display:grid;place-items:center;background:#071018;z-index:20;font-size:16px;letter-spacing:.08em}.hide{display:none!important}
+#ui{position:fixed;inset:0;pointer-events:none}.glass{pointer-events:auto;background:rgba(5,18,28,.72);border:1px solid rgba(95,238,255,.26);backdrop-filter:blur(12px);box-shadow:0 12px 40px rgba(0,0,0,.28)}
+.header{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.title{border-radius:16px;padding:14px 16px;max-width:520px}.eyebrow{font-size:11px;letter-spacing:.16em;color:#8cefff;margin-bottom:6px}.title h1{font-size:clamp(20px,3vw,34px);line-height:1.08;margin:0}.title p{font-size:13px;line-height:1.55;margin:8px 0 0;color:#bfd6df}.controls{border-radius:16px;padding:10px;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;max-width:560px}
+button{border:1px solid rgba(116,241,255,.26);background:rgba(14,56,70,.58);color:white;border-radius:10px;padding:9px 12px;font-weight:700;cursor:pointer}button:hover,button.active{background:rgba(26,194,216,.34);border-color:rgba(143,246,255,.6)}
+.footer{position:absolute;left:14px;right:14px;bottom:14px;display:flex;justify-content:space-between;gap:10px;align-items:flex-end}.hint{border-radius:14px;padding:10px 13px;font-size:12px;color:#c9e5ed}.badge{border-radius:14px;padding:10px 13px;font-size:12px;color:#c9e5ed;text-align:right}
+@media(max-width:800px){.header,.footer{flex-direction:column;align-items:stretch}.controls{justify-content:flex-start;max-width:none}.title{max-width:none}.badge{text-align:left}.title p{display:none}.hint{display:none}}
+</style>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+</head>
+<body>
+<div id="loading">載入 TP-Link 3D 攤位中…</div>
+<canvas id="renderCanvas"></canvas>
+<div id="ui">
+  <div class="header">
+    <div class="glass title">
+      <div class="eyebrow">TP-LINK WF · INTERACTIVE 3D PROPOSAL</div>
+      <h1>TP-Link WF 互動式 3D 攤位</h1>
+      <p>依原提案重新建構：頂部品牌燈箱、左側電競體驗區、中央透明展示台、右側 QR Code 與 Wi‑Fi 科技牆。滑鼠拖曳即可旋轉。</p>
+    </div>
+    <div class="glass controls">
+      <button data-view="hero" class="active">全景</button>
+      <button data-view="front">正面</button>
+      <button data-view="gaming">電競區</button>
+      <button data-view="display">展示台</button>
+      <button data-view="wall">互動牆</button>
+      <button id="rotate">自轉：開</button>
+      <button id="night">夜間模式</button>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="glass hint">操作：左鍵拖曳旋轉 · 滾輪縮放 · 右鍵平移</div>
+    <div class="glass badge">Web 3D Prototype · 可直接分享網址</div>
+  </div>
+</div>
+<script>
+(function(){
+ const canvas=document.getElementById('renderCanvas');
+ const engine=new BABYLON.Engine(canvas,true,{preserveDrawingBuffer:true,stencil:true});
+ const scene=new BABYLON.Scene(engine);
+ scene.clearColor=new BABYLON.Color4(0.025,0.055,0.075,1);
+ scene.imageProcessingConfiguration.contrast=1.1;
+ scene.imageProcessingConfiguration.exposure=1.05;
+ const camera=new BABYLON.ArcRotateCamera('cam',-Math.PI/4,1.05,20,new BABYLON.Vector3(0,2.6,0),scene);
+ camera.attachControl(canvas,true);camera.lowerRadiusLimit=7;camera.upperRadiusLimit=28;camera.lowerBetaLimit=.55;camera.upperBetaLimit=1.48;camera.wheelPrecision=35;camera.panningSensibility=80;
+ let autoRotate=true;
+ const hemi=new BABYLON.HemisphericLight('hemi',new BABYLON.Vector3(0,1,0),scene);hemi.intensity=.72;hemi.diffuse=new BABYLON.Color3(.72,.94,1);
+ const key=new BABYLON.DirectionalLight('key',new BABYLON.Vector3(-.25,-1,-.45),scene);key.position=new BABYLON.Vector3(5,13,8);key.intensity=2.1;
+ const cyan=new BABYLON.PointLight('cyan',new BABYLON.Vector3(-4,5,4),scene);cyan.diffuse=new BABYLON.Color3(.15,.9,1);cyan.intensity=35;cyan.range=16;
+ const cyan2=new BABYLON.PointLight('cyan2',new BABYLON.Vector3(5,4,3),scene);cyan2.diffuse=new BABYLON.Color3(.15,.8,1);cyan2.intensity=28;cyan2.range=14;
+ function mat(name,color,metal=.15,rough=.65,em=null,alpha=1){const m=new BABYLON.PBRMaterial(name,scene);m.albedoColor=BABYLON.Color3.FromHexString(color);m.metallic=metal;m.roughness=rough;m.alpha=alpha;if(em){m.emissiveColor=BABYLON.Color3.FromHexString(em)}return m}
+ const M={dark:mat('dark','#101820',.5,.4),black:mat('black','#0a0e12',.55,.3),white:mat('white','#eef4f7',.08,.68),gray:mat('gray','#9aa8af',.25,.55),teal:mat('teal','#0ca9c4',.25,.36),glow:mat('glow','#d8fbff',.05,.2,'#42e7ff'),glass:mat('glass','#dffaff',.05,.12,null,.33),floor:mat('floor','#151d22',.1,.9)};
+ M.glass.transparencyMode=BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;M.glass.indexOfRefraction=1.45;
+ function box(n,w,h,d,x,y,z,m){const b=BABYLON.MeshBuilder.CreateBox(n,{width:w,height:h,depth:d},scene);b.position.set(x,y,z);b.material=m;return b}
+ function cyl(n,diam,h,x,y,z,m){const c=BABYLON.MeshBuilder.CreateCylinder(n,{diameter:diam,height:h,tessellation:24},scene);c.position.set(x,y,z);c.material=m;return c}
+ function textPlane(n,text,w,h,x,y,z,rotY=0,bg='transparent',fg='white',font=70){const p=BABYLON.MeshBuilder.CreatePlane(n,{width:w,height:h},scene);p.position.set(x,y,z);p.rotation.y=rotY;const dt=new BABYLON.DynamicTexture(n+'dt',{width:1024,height:256},scene,true);const ctx=dt.getContext();ctx.clearRect(0,0,1024,256);if(bg!=='transparent'){ctx.fillStyle=bg;ctx.fillRect(0,0,1024,256)}dt.drawText(text,null,155,'bold '+font+'px Arial',fg,'transparent',true,true);const mm=new BABYLON.StandardMaterial(n+'m',scene);mm.diffuseTexture=dt;mm.emissiveTexture=dt;mm.opacityTexture=dt;p.material=mm;return p}
+ function frame(n,w,h,x,y,z){box(n+'t',w,.07,.07,x,y+h/2,z,M.glow);box(n+'b',w,.07,.07,x,y-h/2,z,M.glow);box(n+'l',.07,h,.07,x-w/2,y,z,M.glow);box(n+'r',.07,h,.07,x+w/2,y,z,M.glow)}
+ function router(n,x,y,z,s=.45,white=false,ant=4){const body=box(n+'body',1.3*s,.2*s,.8*s,x,y,z,white?M.white:M.black);for(let i=0;i<ant;i++){cyl(n+'a'+i,.055*s,.72*s,x+(i-(ant-1)/2)*.24*s,y+.41*s,z-.16*s,M.black)}box(n+'led',.7*s,.025*s,.04*s,x,y+.08*s,z+.37*s,M.glow);return body}
+ const floor=BABYLON.MeshBuilder.CreateGround('floor',{width:60,height:60},scene);floor.material=M.floor;
+ box('stage',12,.18,8,0,.09,0,M.white);box('stageGlow',12.4,.035,8.4,0,.13,0,M.glow);
+ box('leftWall',.25,4.6,5.4,-5.8,2.3,.05,M.dark);box('backWall',5.5,4.6,.25,-3.0,2.3,-2.5,M.dark);box('rightWall',.25,4.6,3.7,5.65,2.3,.6,M.white);box('midWall',3.7,4.6,.25,3.65,2.3,-1.15,M.white);
+ box('sign',6.5,.7,3.3,0,6.25,-.1,M.teal);box('signEdge',6.65,.045,3.45,0,6.58,-.1,M.glow);box('signUnder',2.9,.045,1.25,0,5.65,-.1,M.glow);textPlane('logo','tp-link',2.8,.72,1.3,6.25,1.56,0,'transparent','#ffffff',120);
+ textPlane('wifi7','Wi‑Fi 7   Beyond Fast',1.9,.7,-5.66,3.3,1.4,Math.PI/2,'#111920','#ffffff',80);
+ box('peg',3.9,2.05,.12,-2.85,3.0,-2.32,M.gray);frame('pegF',4.0,2.12,-2.85,3.0,-2.23);textPlane('gameTitle','Game On. WiFi Strong.',3.7,.45,-2.85,4.45,-2.22,0,'transparent','#e7fbff',58);
+ box('shelf1',3.35,.06,.35,-2.85,3.62,-2.13,M.glow);box('shelf2',3.35,.06,.35,-2.85,2.72,-2.13,M.glow);
+ router('r1',-4.05,3.78,-2.08,.34,false,3);router('r2',-3.15,3.78,-2.08,.34,false,4);router('r3',-2.2,3.78,-2.08,.34,true,0);router('r4',-1.55,3.78,-2.08,.34,false,4);router('r5',-4.0,2.87,-2.08,.28,true,0);router('r6',-3.25,2.87,-2.08,.28,false,0);router('r7',-2.4,2.87,-2.08,.28,false,5);router('r8',-1.6,2.87,-2.08,.28,true,0);
+ box('desk',3.4,.12,.9,-2.85,1.15,1.5,M.black);box('deskGlow',3.4,.06,.06,-2.85,1.08,1.08,M.glow);[-4.35,-1.35].forEach(x=>{box('leg'+x,.1,1,.1,x,.55,1.82,M.dark);box('legb'+x,.1,1,.1,x,.55,1.22,M.dark)});box('mon1',.95,.58,.08,-3.25,1.68,1.02,M.black);box('mon2',.95,.58,.08,-2.18,1.68,1.02,M.black);textPlane('m1t','GAMING',.78,.35,-3.25,1.68,.975,0,'#071019','#61efff',70);textPlane('m2t','Wi‑Fi',.78,.35,-2.18,1.68,.975,0,'#071019','#61efff',70);box('pc',.52,.95,.25,-1.42,1.53,1.5,M.black);box('pcGlow',.06,.82,.05,-1.17,1.53,1.61,M.glow);
+ cyl('chairBase',.58,.12,-4.15,.08,1.55,M.dark);cyl('chairPost',.12,.62,-4.15,.4,1.55,M.dark);box('chairSeat',.55,.12,.55,-4.15,.75,1.55,M.dark);box('chairBack',.62,.9,.14,-4.15,1.32,1.82,M.black);
+ box('podium',4.7,.8,2.5,0,.48,1.05,M.white);box('podiumGlow',4.85,.04,2.65,0,.09,1.05,M.glow);box('acryl1',3.8,.36,2,0,.98,1.05,M.glass);box('acryl2',2.8,.32,1.4,0,1.35,1.05,M.glass);box('acryl3',1.85,.28,.9,0,1.67,1.05,M.glass);router('c1',-1.1,.94,1.12,.44,false,4);router('c2',0,1.31,1.05,.44,false,4);router('c3',1.08,.94,.86,.44,false,4);box('deco1',.48,.8,.34,1.65,1.0,.72,M.white);box('deco2',.48,.55,.28,2.05,.85,1.2,M.white);textPlane('vote','投票 / 活動區   Vote & Win',2.6,.5,.75,.53,2.31,0,'transparent','#ffffff',56);textPlane('frontLogo','tp-link',1.4,.4,-1.55,.53,2.31,0,'transparent','#ffffff',82);
+ box('screen',1.25,.75,.08,.15,2.75,-1.98,M.black);textPlane('screenT','TP-LINK',1.05,.5,.15,2.75,-2.025,0,'#06121b','#6cefff',72);
+ frame('qrF',2.05,3.0,2.9,2.4,2.28);frame('wifiF',2.7,3.0,5.0,2.4,2.28);textPlane('scan','掃描參與活動',1.7,.45,2.9,3.55,2.235,0,'transparent','#ffffff',54);textPlane('scan2','Scan to Join',1.7,.35,2.9,3.2,2.235,0,'transparent','#ffffff',44);
+ box('qrPanel',1.18,1.18,.045,2.9,2.25,2.23,M.white);for(let iy=0;iy<7;iy++)for(let ix=0;ix<7;ix++){if(((ix*3+iy*5+ix*iy)%4)<2){box('q'+ix+'_'+iy,.11,.11,.035,2.9-.42+ix*.14,2.25+.42-iy*.14,2.19,M.black)}}
+ textPlane('wifiTitle','WiFi Technology',2.25,.45,5.0,3.55,2.235,0,'transparent','#ffffff',55);[0.95,.72,.49].forEach((r,i)=>{const tor=BABYLON.MeshBuilder.CreateTorus('wifiArc'+i,{diameter:r*2,thickness:.05,tessellation:64,arc:.5},scene);tor.position.set(5,2.55-i*.28,2.22);tor.rotation.z=Math.PI;tor.material=M.glow});cyl('wifiDot',.18,.08,5,1.78,2.22,M.glow);
+ box('post1',.18,5.3,.18,-1.2,3.0,1.45,M.glow);box('post2',.18,5.3,.18,1.6,3.0,-1.25,M.glow);
+ const views={hero:{a:-Math.PI/4,b:1.05,r:20,t:new BABYLON.Vector3(0,2.6,0)},front:{a:-Math.PI/2,b:1.13,r:19,t:new BABYLON.Vector3(0,2.5,.5)},gaming:{a:-2.5,b:1.12,r:11.5,t:new BABYLON.Vector3(-3,2,.3)},display:{a:-1.18,b:1.2,r:10.5,t:new BABYLON.Vector3(0,1.25,1)},wall:{a:-.48,b:1.1,r:11,t:new BABYLON.Vector3(4.1,2.3,1.2)}};
+ function go(k){const v=views[k];if(!v)return;camera.alpha=v.a;camera.beta=v.b;camera.radius=v.r;camera.target.copyFrom(v.t);document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===k))}
+ document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>go(b.dataset.view));
+ document.getElementById('rotate').onclick=function(){autoRotate=!autoRotate;this.textContent='自轉：'+(autoRotate?'開':'關');this.classList.toggle('active',autoRotate)};
+ let night=false;document.getElementById('night').onclick=function(){night=!night;scene.clearColor=night?new BABYLON.Color4(.008,.015,.025,1):new BABYLON.Color4(.025,.055,.075,1);hemi.intensity=night?.42:.72;cyan.intensity=night?48:35;cyan2.intensity=night?40:28;this.textContent=night?'日間模式':'夜間模式';this.classList.toggle('active',night)};
+ engine.runRenderLoop(function(){if(autoRotate && !camera.inertialAlphaOffset)camera.alpha+=.0018;scene.render()});
+ window.addEventListener('resize',()=>engine.resize());
+ scene.executeWhenReady(()=>document.getElementById('loading').classList.add('hide'));
+ setTimeout(()=>document.getElementById('loading').classList.add('hide'),7000);
+})();
+</script>
+</body>
+</html>
